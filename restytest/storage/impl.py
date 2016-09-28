@@ -56,7 +56,7 @@ class Storage(object):
         )
         user = self.conn.execute(user_select).fetchone()
         assocs = self.conn.execute(groups_select)
-        return _to_user(user, assocs)
+        return _to_user(user, assocs) if user else None
 
     def create_user(self, user):
         user_id = user.user_id
@@ -99,7 +99,7 @@ class Storage(object):
         )
         group = self.conn.execute(group_select).fetchone()
         assocs = self.conn.execute(users_select)
-        return _to_group(group, assocs)
+        return _to_group(group, assocs) if group else None
 
     def create_group(self, group):
         group_id = group.group_id

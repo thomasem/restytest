@@ -1,13 +1,20 @@
 """ SQLite access layer tests"""
 import unittest
 
-from restytest import storage
 from restytest import models
+from restytest import storage
+from restytest.storage import schema
 
 
-class TestUser(unittest.TestCase):
+class StorageTestBase(unittest.TestCase):
     def setUp(self):
         self.db = storage.Storage()
+
+
+class TestUser(StorageTestBase):
+    def setUp(self):
+        super(TestUser, self).setUp()
+
         self.groups = ['admins', 'users']
         [self.db.create_group(models.Group(g)) for g in self.groups]
 
@@ -112,10 +119,16 @@ class TestUser(unittest.TestCase):
         self.assertEqual(user.groups, result.groups)
         self.assertEqual(result.groups, [])
 
+    def test_get_user_not_exists(self):
+        result = self.db.get_user('bc')
 
-class TestGroup(unittest.TestCase):
+        self.assertIsNone(result)
+
+
+class TestGroup(StorageTestBase):
     def setUp(self):
-        self.db = storage.Storage()
+        super(TestGroup, self).setUp()
+
         self.users = [
             models.User(
                 user_id="bc",
@@ -164,3 +177,34 @@ class TestGroup(unittest.TestCase):
         self.assertEqual(group.group_id, result.group_id)
         self.assertEqual(group.users, result.users)
         self.assertEqual(result.users, [])
+
+    def test_get_group_not_exists(self):
+        result = self.db.get_group('admins')
+
+        self.assertIsNone(result)
+
+
+class TestTransaction(StorageTestBase):
+    def test_transaction(self):
+        series = [
+            (
+                schema.users.insert().values(
+                    id="bc",
+                    first_name="Bumbleywump",
+                    last_name="Cucumberpatch"
+                ),
+            ),
+            (
+                schema.user_group_associations.insert().values(
+                    group_id="thisuserdoesnotexist",
+                    user_id="thisgroupdoesnotexist"
+                ),
+            ),
+        ]
+
+        with self.assertRaises(Exception):
+            self.db._transaction(series)
+
+        result = self.db.get_user('bc')
+
+        self.assertIsNone(result)
