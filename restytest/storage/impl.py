@@ -123,3 +123,7 @@ class Storage(object):
         self._transaction(series)
 
         return self.get_group(group_id)
+
+    def delete_group(self, group_id):
+        delete = schema.groups.delete().where(schema.groups.c.id == group_id)
+        self.conn.execute(delete)

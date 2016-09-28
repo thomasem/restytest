@@ -10,6 +10,9 @@ class StorageTestBase(unittest.TestCase):
     def setUp(self):
         self.db = storage.Storage()
 
+    def _get_assocs(self):
+        return self.db.conn.execute(schema.user_group_associations.select())
+
 
 class TestUser(StorageTestBase):
     def setUp(self):
@@ -124,6 +127,47 @@ class TestUser(StorageTestBase):
 
         self.assertIsNone(result)
 
+    def test_delete_user(self):
+        user = models.User(
+            user_id="bc",
+            first_name="Bumbleywump",
+            last_name="Cucumberpatch",
+        )
+        self.db.create_user(user)
+        self.db.delete_user(user.user_id)
+
+        result = self.db.get_user(user.user_id)
+
+        self.assertIsNone(result)
+
+    def test_delete_user_with_groups(self):
+        user = models.User(
+            user_id="bc",
+            first_name="Bumbleywump",
+            last_name="Cucumberpatch",
+            groups=['admins']
+        )
+        self.db.create_user(user)
+        self.db.delete_user(user.user_id)
+
+        result = self.db.get_user(user.user_id)
+
+        self.assertIsNone(result)
+
+    def test_delete_user_with_groups_cleans_assocs(self):
+        user = models.User(
+            user_id="bc",
+            first_name="Bumbleywump",
+            last_name="Cucumberpatch",
+            groups=['admins']
+        )
+
+        self.db.create_user(user)
+        self.assertNotEqual(list(self._get_assocs()), [])
+
+        self.db.delete_user(user.user_id)
+        self.assertEqual(list(self._get_assocs()), [])
+
 
 class TestGroup(StorageTestBase):
     def setUp(self):
@@ -182,6 +226,18 @@ class TestGroup(StorageTestBase):
         result = self.db.get_group('admins')
 
         self.assertIsNone(result)
+
+    def test_delete_group_with_users_cleans_assocs(self):
+        group = models.Group(
+            group_id="users",
+            users=['thomasem', 'bc'],
+        )
+
+        self.db.create_group(group)
+        self.assertNotEqual(list(self._get_assocs()), [])
+
+        self.db.delete_group(group.group_id)
+        self.assertEqual(list(self._get_assocs()), [])
 
 
 class TestTransaction(StorageTestBase):
