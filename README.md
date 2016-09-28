@@ -1,6 +1,11 @@
 # RestyTest
 
-## Deployment
+## Deployment (w/o Docker)
+
+### Environment assumptions
+* Linux or OS X
+* Python 2.7.12
+* `tox` is installed for running tests
 
 ### Installation
 
@@ -22,6 +27,32 @@ $ restytest
 ...
 ```
 
+## Deployment (w/ Docker)
+
+### Environment assumptions
+
+* `HOST_PORT` is an environment variable set to the port you wish to expose on
+  the host you're deploying this service to. Otherwise you can use `-P` in place
+  of `-p $HOST_PORT:8080` and then `docker port restytest 8080/tcp` to get the
+  location address and port the server is listening on.
+
+### Hosted image
+
+```bash
+$ docker run -d --name restytest -p $HOST_PORT:8080 tmaddox/restytest
+...
+```
+
+### Local build
+
+```bash
+$ docker build -t restytest .
+...
+$ docker run -d --name restytest -p $HOST_PORT:8080 restytest
+...
+```
+
+
 ## Definitions/Assumptions
 
 * Given the ambiguity in the industry for types of tests, I will be using the
@@ -36,11 +67,12 @@ $ restytest
     ** Integration: Integration tests will err on the side of the highest
        possible fidelity; avoiding the use of mocks where viable, to assert real
        behavior of the integration between services.
-* Given the scope of the exercise, I will be favoring integration tests as they
+* Given the scope of the exercise, I will be favoring functional tests as they
   have the highest return in terms of fidelity versus time spent.
 * Durable data means in-memory and not persisted between restarts of the service
 * The deployer will have the latest version of Python 2.7.x (2.7.12 as of this
   documentation.)
+* 
 
 ## Rationale
 
