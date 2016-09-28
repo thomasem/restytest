@@ -3,8 +3,10 @@ import os
 from pip import req
 import setuptools
 
+
+requirements_path = os.path.join
 requirements = [
-    str(r.req) for r in req.parse_requirements('requirements.txt',
+    str(r.req) for r in req.parse_requirements('./requirements.txt',
                                                session=False)
 ]
 
@@ -25,4 +27,9 @@ core.setup(
     ],
     packages=setuptools.find_packages(),
     install_requires=requirements,
+    entry_points={
+        'console_scripts': [
+            'restytest = api.app:serve'
+        ]
+    }
 )
