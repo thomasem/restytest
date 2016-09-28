@@ -18,7 +18,7 @@ def _to_user(user, assocs):
     )
 
 
-def to_group(group, assocs):
+def _to_group(group, assocs):
     return models.Group(
         group_id=group.id,
         users=[a.user_id for a in assocs]
@@ -86,3 +86,40 @@ class Storage(object):
     def delete_user(self, user_id):
         delete = schema.users.delete().where(schema.users.c.id == user_id)
         self.conn.execute(delete)
+
+    def get_group(self, group_id):
+        # NOTE(thomasem): Willing to make two queries because it's in-memory.
+        # for a persistent storage solution, would want to use functionality
+        # that's not available for an in-memory solution, such as sub-query and
+        # array casting, if possible.
+        group_select = schema.groups.select()
+        group_select = group_select.where(schema.groups.c.id == group_id)
+        users_select = schema.user_group_associations.select().where(
+            schema.user_group_associations.c.group_id == group_id
+        )
+        group = self.conn.execute(group_select).fetchone()
+        assocs = self.conn.execute(users_select)
+        return _to_group(group, assocs)
+
+    def create_group(self, group):
+        group_id = group.group_id
+        group_insert = schema.groups.insert().values(
+            id=group_id,
+        )
+        users_values = [
+            {
+                "user_id": user_id,
+                "group_id": group_id
+            }
+            for user_id in group.users
+        ]
+
+        series = [(group_insert,)]
+        if users_values:
+            series.append(
+                (schema.user_group_associations.insert(), users_values)
+            )
+
+        self._transaction(series)
+
+        return self.get_group(group_id)

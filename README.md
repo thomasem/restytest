@@ -68,7 +68,8 @@ $ docker run -d --name restytest -p $HOST_PORT:8080 restytest
        possible fidelity; avoiding the use of mocks where viable, to assert real
        behavior of the integration between services.
 * Given the scope of the exercise, I will be favoring functional tests as they
-  have the highest return in terms of fidelity versus time spent.
+  have the highest return in terms of fidelity versus time spent since this
+  application does not require external services.
 * Durable data means in-memory and not persisted between restarts of the service
 * The deployer will have the latest version of Python 2.7.x (2.7.12 as of this
   documentation.)
