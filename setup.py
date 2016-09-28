@@ -29,7 +29,7 @@ core.setup(
     install_requires=requirements,
     entry_points={
         'console_scripts': [
-            'restytest = api.app:serve'
+            'restytest = restytest.api.app:serve'
         ]
     }
 )
