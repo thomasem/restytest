@@ -172,7 +172,7 @@ __________________________________________________________ summary _____________
   identifiers and partial PUTs is usually a cleaner and easier design choice in
   the long run.
 
-* Same goes for Groups. Seems like a numeric, generated ID would lend itself to
+* Same goes for Groups; seems like a generated ID would lend itself to
   cleaner design.
 
 * Using in-memory (perhaps just SQLite) for durable storage left me without a
