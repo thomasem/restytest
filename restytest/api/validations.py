@@ -84,10 +84,10 @@ def validate_group_put(data):
 
 
 def validate_userid(userid):
-    if not isinstance(userid, str) or len(userid) > NAME_LENGTH:
-        raise exceptions.ValidationError()
+    if len(userid) > NAME_LENGTH:
+        raise exceptions.InvalidIdentifier()
 
 
 def validate_group_name(group_name):
-    if not isinstance(group_name, str) or len(group_name) > NAME_LENGTH:
-        raise exceptions.ValidationError()
+    if len(group_name) > NAME_LENGTH:
+        raise exceptions.InvalidIdentifier()

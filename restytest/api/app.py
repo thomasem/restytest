@@ -26,8 +26,7 @@ def common_failures(func):
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except (TypeError, ValueError):
-            raise
+        except (TypeError, ValueError, exceptions.InvalidIdentifier):
             bottle.abort(400)
         except (exceptions.GroupNotFound, exceptions.UserNotFound):
             bottle.abort(404)

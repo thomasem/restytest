@@ -15,3 +15,7 @@ class ValidationError(Exception):
 
 class ResourceAlreadyExists(Exception):
     pass
+
+
+class InvalidIdentifier(Exception):
+    pass

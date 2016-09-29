@@ -80,6 +80,14 @@ class TestAPIGroups(APITestBase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json['userids'], ['bc'])
 
+    def test_delete_invalid_group_name(self):
+        resp = self.app.delete("/groups/{}".format("a" * 36), status=400)
+        self.assertEqual(resp.status_code, 400)
+
+    def test_put_group_invalid_json(self):
+        resp = self.app.put_json("/groups/admins", {"foo": "bar"}, status=422)
+        self.assertEqual(resp.status_code, 422)
+
 
 class TestAPIUsers(APITestBase):
     def setUp(self):
@@ -173,3 +181,7 @@ class TestAPIUsers(APITestBase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json, user)
         self.assertEqual(resp.json['groups'], ['admins', 'wookiees'])
+
+    def test_delete_invalid_userid(self):
+        resp = self.app.delete("/users/{}".format("a" * 36), status=400)
+        self.assertEqual(resp.status_code, 400)
