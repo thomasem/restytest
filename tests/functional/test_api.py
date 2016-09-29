@@ -40,6 +40,13 @@ class TestAPIGroups(APITestBase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json, expected)
 
+    def test_create_group_exists(self):
+        group = {"name": "admins"}
+        self.app.post_json("/groups", group)
+
+        resp = self.app.post_json("/groups", group, status=409)
+        self.assertEqual(resp.status_code, 409)
+
     def test_get_group(self):
         expected = {
             "userids": []
@@ -108,6 +115,19 @@ class TestAPIUsers(APITestBase):
 
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json, expected)
+
+    def test_create_user_exists(self):
+        expected = {
+            "userid": "bc",
+            "first_name": "Bumbleywump",
+            "last_name": "Cucumberpatch",
+            "groups": []
+        }
+        self.app.post_json("/users", expected)
+
+        resp = self.app.post_json("/users", expected, status=409)
+
+        self.assertEqual(resp.status_code, 409)
 
     def test_create_user_existing_groups(self):
         expected = {

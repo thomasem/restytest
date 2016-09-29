@@ -20,7 +20,7 @@ Configuration is done via the following environment variables:
 * `RESTYTEST_HOST`: Address to listen for requests on (default: `localhost`)
 * `RESTYTEST_PORT`: Port to listen to requests on (default: `8080`)
 
-### Run
+### Run with entrypoint script)
 
 ```bash
 $ restytest
@@ -51,6 +51,18 @@ $ curl -X POST http://localhost:8080/groups -d '{"name": "admins"}' | jq .
   "userids": []
 }
 ```
+
+### Run without entrypoint script
+
+```bash
+$ pip install -r requirements.txt && pip install -e .
+$ python restytest/api/app.py
+Bottle v0.12.9 server starting up (using WSGIRefServer())...
+Listening on http://localhost:8080/
+Hit Ctrl-C to quit.
+...
+```
+
 ### Gotchas
 
 * If you're using `pyenv` for setting up a virtualenv to install this package in

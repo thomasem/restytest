@@ -106,3 +106,7 @@ def serve():
         host=os.environ.get('RESTYTEST_HOST', 'localhost'),
         port=os.environ.get('RESTYTEST_PORT', 8080)
     )
+
+
+if __name__ == "__main__":
+    serve()
