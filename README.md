@@ -27,21 +27,43 @@ $ restytest
 ...
 ```
 
+### Example
+
+#### In one terminal
+
+```bash
+$ python setup.py install
+running install
+...
+Finished processing dependencies for RestyTest==0.1.0
+$ pyenv rehash
+$ restytest
+Bottle v0.12.9 server starting up (using WSGIRefServer())...
+Listening on http://localhost:8080/
+Hit Ctrl-C to quit.
+```
+
+#### In another terminal
+
+```bash
+$ curl -X POST http://localhost:8080/groups -d '{"name": "admins"}' | jq .
+{
+  "userids": []
+}
+```
+### Gotchas
+
+* If you're using `pyenv` for setting up a virtualenv to install this package in
+  be sure to run `pyenv rehash` after doing `python setup.py install`
+
 ## Deployment (w/ Docker)
 
 ### Environment assumptions
 
 * `HOST_PORT` is an environment variable set to the port you wish to expose on
   the host you're deploying this service to. Otherwise you can use `-P` in place
-  of `-p $HOST_PORT:8080` and then `docker port restytest 8080/tcp` to get the
+  of `-p $HOST_PORT:8080` and then `docker port restytest 8080` to get the
   location address and port the server is listening on.
-
-### Hosted image
-
-```bash
-$ docker run -d --name restytest -p $HOST_PORT:8080 tmaddox/restytest
-...
-```
 
 ### Local build
 
@@ -50,6 +72,32 @@ $ docker build -t restytest .
 ...
 $ docker run -d --name restytest -p $HOST_PORT:8080 restytest
 ...
+```
+
+### Example
+
+```bash
+$ docker build -t restytest .
+Sending build context to Docker daemon 68.89 MB
+Step 1 : FROM python:2.7
+ ---> 6b494b5f019c
+...
+$ docker run -d --name restytest -P restytest
+04e1dd26018c212dce62e70f23c143402093b014b1195b688a00f92dc47b2734
+(planet) 21:23:33(-0500) ~/restytest {master} $ docker port restytest 8080
+0.0.0.0:33039
+(planet) 21:23:43(-0500) ~/restytest {master} $ curl -X POST http://localhost:33039/groups -d '{"name": "admins"}' | jq .
+{
+  "userids": []
+}
+```
+
+## Running Tests
+
+```bash
+$ pip install tox
+...
+$ tox
 ```
 
 ## Rationale
@@ -93,5 +141,6 @@ $ docker run -d --name restytest -p $HOST_PORT:8080 restytest
   ought to follow a similar pattern to `POST /users` in that you submit a valid
   Group object.
 
-* The returned objects from the `/groups` endpoint were inconsistent and
+* The returned objects from the `/groups` endpoint were inconsistent with what
+  was used to create the  and
   would be confusing for an end-user to work with at first.
