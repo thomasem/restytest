@@ -3,7 +3,7 @@
 ## Deployment (w/o Docker)
 
 ### Environment assumptions
-* Linux or OS X
+* Linux OS (I suspect OS X will work as well, but don't have one to test)
 * Python 2.7.12
 * `tox` is installed for running tests
 
