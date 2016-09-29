@@ -99,9 +99,9 @@ Step 1 : FROM python:2.7
 ...
 $ docker run -d --name restytest -P restytest
 04e1dd26018c212dce62e70f23c143402093b014b1195b688a00f92dc47b2734
-(planet) 21:23:33(-0500) ~/restytest {master} $ docker port restytest 8080
+$ docker port restytest 8080
 0.0.0.0:33039
-(planet) 21:23:43(-0500) ~/restytest {master} $ curl -X POST http://localhost:33039/groups -d '{"name": "admins"}' | jq .
+$ curl -X POST http://localhost:33039/groups -d '{"name": "admins"}' | jq .
 {
   "userids": []
 }
