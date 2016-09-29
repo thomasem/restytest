@@ -12,6 +12,5 @@ def user(user_model):
 
 def group(group_model):
     return {
-        "group_name": group_model.group_id,
-        "users": [u for u in group_model.users]
+        "userids": [u for u in group_model.users]
     }

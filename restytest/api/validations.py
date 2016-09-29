@@ -31,17 +31,34 @@ user = {
             },
             "maxItems": 50
         }
-    }
+    },
+    "additionalProperties": False
 }
 
-group = {
+group_post = {
     "type": "object",
     "properties": {
         "name": {
             "type": "string",
             "maxLength": NAME_LENGTH
         }
-    }
+    },
+    "additionalProperties": False
+}
+
+group_put = {
+    "type": "object",
+    "properties": {
+        "userids": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "maxLength": NAME_LENGTH
+            },
+            "maxItems": 50
+        }
+    },
+    "additionalProperties": False
 }
 
 
@@ -52,9 +69,16 @@ def validate_user(data):
         raise exceptions.ValidationError()
 
 
-def validate_group(data):
+def validate_group_post(data):
     try:
-        jsonschema.validate(data, group)
+        jsonschema.validate(data, group_post)
+    except:
+        raise exceptions.ValidationError()
+
+
+def validate_group_put(data):
+    try:
+        jsonschema.validate(data, group_put)
     except:
         raise exceptions.ValidationError()
 

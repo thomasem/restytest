@@ -13,5 +13,5 @@ class ValidationError(Exception):
     pass
 
 
-class AlreadyExists(Exception):
+class ResourceAlreadyExists(Exception):
     pass

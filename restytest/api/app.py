@@ -27,6 +27,7 @@ def common_failures(func):
         try:
             return func(*args, **kwargs)
         except (TypeError, ValueError):
+            raise
             bottle.abort(400)
         except (exceptions.GroupNotFound, exceptions.UserNotFound):
             bottle.abort(404)
@@ -63,13 +64,15 @@ def get_user(userid):
 @app.put(USER_ROUTE)
 @common_failures
 def update_user(userid):
-    pass
+    request_json = json.load(bottle.request.body)
+    return views.user(cntrlr.update_user(userid, request_json))
 
 
 @app.delete(USER_ROUTE)
 @common_failures
 def delete_user(userid):
-    pass
+    cntrlr.delete_user(userid)
+    bottle.response.status = 204
 
 
 @app.post(GROUPS_ROUTE)
@@ -82,24 +85,25 @@ def create_group():
 @app.get(GROUP_ROUTE)
 @common_failures
 def get_group(group_name):
-    pass
+    return views.group(cntrlr.get_group(group_name))
 
 
 @app.put(GROUP_ROUTE)
 @common_failures
 def update_group(group_name):
-    pass
+    request_json = json.load(bottle.request.body)
+    return views.group(cntrlr.update_group(group_name, request_json))
 
 
 @app.delete(GROUP_ROUTE)
 @common_failures
 def delete_group(group_name):
-    pass
+    cntrlr.delete_group(group_name)
+    bottle.response.status = 204
 
 
 def serve():
     app.run(
         host=os.environ.get('RESTYTEST_HOST', 'localhost'),
-        port=os.environ.get('RESTYTEST_PORT', 8080),
-        debug=True
+        port=os.environ.get('RESTYTEST_PORT', 8080)
     )

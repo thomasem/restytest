@@ -21,9 +21,6 @@ class TestUser(StorageTestBase):
         self.groups = ['admins', 'users']
         [self.db.create_group(models.Group(g)) for g in self.groups]
 
-    def tearDown(self):
-        del self.db
-
     def test_create_user_with_group(self):
         user = models.User(
             user_id="bc",
@@ -186,9 +183,6 @@ class TestGroup(StorageTestBase):
             )
         ]
         [self.db.create_user(u) for u in self.users]
-
-    def tearDown(self):
-        del self.db
 
     def test_create_user_with_users(self):
         group = models.Group(

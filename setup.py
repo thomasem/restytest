@@ -12,7 +12,7 @@ requirements = [
 
 core.setup(
     name='RestyTest',
-    version='0.0.1',
+    version='0.1.0',
     description="Example REST application exposing the relationship between"
                 " Users and Groups.",
     author='Thomas Maddox',
