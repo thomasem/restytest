@@ -94,10 +94,42 @@ $ docker run -d --name restytest -P restytest
 
 ## Running Tests
 
+### Run the tests
+
 ```bash
 $ pip install tox
 ...
 $ tox
+```
+### Example
+
+```bash
+$ tox
+py27 installed: ...
+py27 runtests: PYTHONHASHSEED='2638231499'
+py27 runtests: commands[0] | nosetests --with-coverage --cover-package=restytest
+
+Name                          Stmts   Miss  Cover   Missing
+-----------------------------------------------------------
+restytest.py                      0      0   100%
+restytest/api.py                  0      0   100%
+restytest/models.py              10      0   100%
+restytest/storage.py              2      0   100%
+restytest/storage/impl.py        85      0   100%
+restytest/storage/schema.py       5      0   100%
+-----------------------------------------------------------
+TOTAL                           102      0   100%
+----------------------------------------------------------------------
+Ran 0 tests in 0.043s
+
+OK
+flake8 installed: ...
+flake8 runtests: PYTHONHASHSEED='2638231499'
+flake8 runtests: commands[0] | flake8
+__________________________________________________________ summary ___________________________________________________________
+  py27: commands succeeded
+  flake8: commands succeeded
+  congratulations :)
 ```
 
 ## Rationale
