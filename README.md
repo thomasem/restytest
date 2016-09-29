@@ -20,10 +20,13 @@ Configuration is done via the following environment variables:
 * `RESTYTEST_HOST`: Address to listen for requests on (default: `localhost`)
 * `RESTYTEST_PORT`: Port to listen to requests on (default: `8080`)
 
-### Run with entrypoint script)
+### Run with entrypoint script
 
 ```bash
 $ restytest
+Bottle v0.12.9 server starting up (using WSGIRefServer())...
+Listening on http://localhost:8080/
+Hit Ctrl-C to quit.
 ...
 ```
 
