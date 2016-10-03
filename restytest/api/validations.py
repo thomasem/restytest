@@ -32,7 +32,8 @@ user = {
             "maxItems": 50
         }
     },
-    "additionalProperties": False
+    "additionalProperties": False,
+    "required": ["userid", "first_name", "last_name", "groups"]
 }
 
 group_post = {
@@ -43,7 +44,9 @@ group_post = {
             "maxLength": NAME_LENGTH
         }
     },
-    "additionalProperties": False
+    "additionalProperties": False,
+    "required": ["name"]
+
 }
 
 group_put = {
@@ -58,7 +61,8 @@ group_put = {
             "maxItems": 50
         }
     },
-    "additionalProperties": False
+    "additionalProperties": False,
+    "required": ["userids"]
 }
 
 

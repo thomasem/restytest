@@ -95,6 +95,10 @@ class TestAPIGroups(APITestBase):
         resp = self.app.put_json("/groups/admins", {"foo": "bar"}, status=422)
         self.assertEqual(resp.status_code, 422)
 
+    def test_post_group_missing_name(self):
+        resp = self.app.post_json("/groups", {}, status=422)
+        self.assertEqual(resp.status_code, 422)
+
 
 class TestAPIUsers(APITestBase):
     def setUp(self):
@@ -205,3 +209,22 @@ class TestAPIUsers(APITestBase):
     def test_delete_invalid_userid(self):
         resp = self.app.delete("/users/{}".format("a" * 36), status=400)
         self.assertEqual(resp.status_code, 400)
+
+    def test_required_field_missing_groups(self):
+        user = {
+            "userid": "bc",
+            "first_name": "Bumbleywump",
+            "last_name": "Cucumberpatch",
+        }
+
+        resp = self.app.post_json("/users", user, status=422)
+        self.assertEqual(resp.status_code, 422)
+
+    def test_required_field_missing_first_name_and_groups(self):
+        user = {
+            "userid": "bc",
+            "last_name": "Cucumberpatch",
+        }
+
+        resp = self.app.post_json("/users", user, status=422)
+        self.assertEqual(resp.status_code, 422)
