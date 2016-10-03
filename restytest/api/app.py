@@ -27,24 +27,19 @@ def common_failures(func):
         try:
             return func(*args, **kwargs)
         except (TypeError, ValueError, exceptions.InvalidIdentifier):
-            bottle.abort(400)
+            bottle.abort(400, text="Bad request")
         except (exceptions.GroupNotFound, exceptions.UserNotFound):
-            bottle.abort(404)
-        except exceptions.ValidationError:
-            bottle.abort(422)
+            bottle.abort(404, text="Resource not found")
         except exceptions.ResourceAlreadyExists:
-            bottle.abort(409)
+            bottle.abort(409, text="Resource already exists")
+        except exceptions.ValidationError as e:
+            bottle.abort(422, text=str(e.message))
     return wrapper
 
 
-@bottle.hook('after_request')
-def set_content_type():
+def serve_error(error):
     bottle.response.set_header("Content-Type", API_MIMETYPE)
-
-
-@app.error(500)
-def handle500(error):
-    return "Internal server error"
+    return json.dumps({"error": error.body})
 
 
 @app.post(USERS_ROUTE)
@@ -102,9 +97,13 @@ def delete_group(group_name):
 
 
 def serve():
+    # NOTE(thomasem): Set up basic error handler for all expected HTTP errors
+    [app.error(code)(serve_error) for code in [400, 404, 409, 422, 500]]
+
     app.run(
         host=os.environ.get('RESTYTEST_HOST', 'localhost'),
-        port=os.environ.get('RESTYTEST_PORT', 8080)
+        port=os.environ.get('RESTYTEST_PORT', 8080),
+        debug=True
     )
 
 

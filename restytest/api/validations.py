@@ -66,25 +66,29 @@ group_put = {
 }
 
 
+def _raise_validation_error(msg):
+    raise exceptions.ValidationError(msg)
+
+
 def validate_user(data):
     try:
         jsonschema.validate(data, user)
-    except:
-        raise exceptions.ValidationError()
+    except jsonschema.ValidationError as e:
+        _raise_validation_error(e.message)
 
 
 def validate_group_post(data):
     try:
         jsonschema.validate(data, group_post)
-    except:
-        raise exceptions.ValidationError()
+    except jsonschema.ValidationError as e:
+        _raise_validation_error(e.message)
 
 
 def validate_group_put(data):
     try:
         jsonschema.validate(data, group_put)
-    except:
-        raise exceptions.ValidationError()
+    except jsonschema.ValidationError as e:
+        _raise_validation_error(e.message)
 
 
 def validate_userid(userid):
