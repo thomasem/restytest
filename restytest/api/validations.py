@@ -61,7 +61,10 @@ group_put = {
     "additionalProperties": False
 }
 
-
+# A couple things:
+# * This validation should be returning the actual validation errors for the consumer... they're swallowed here and we have no idea
+# what failed and why.
+# * All of these functions could be one-liners, just pass the data and schema into a single validate function and return that.
 def validate_user(data):
     try:
         jsonschema.validate(data, user)
@@ -82,7 +85,8 @@ def validate_group_put(data):
     except:
         raise exceptions.ValidationError()
 
-
+# Feedback: Having a consistent validation error would be better - what's the difference from an InvalidIdentifier vs a ValidationError?
+# That doesn't make much sense.
 def validate_userid(userid):
     if len(userid) > NAME_LENGTH:
         raise exceptions.InvalidIdentifier()

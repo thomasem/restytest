@@ -4,6 +4,7 @@ from pip import req
 import setuptools
 
 
+# What on earth is this?! (I think it's leftover from an initial and abandoned implementation)
 requirements_path = os.path.join
 requirements = [
     str(r.req) for r in req.parse_requirements('./requirements.txt',

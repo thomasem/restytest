@@ -12,6 +12,8 @@ class APITestBase(unittest.TestCase):
         self.app = webtest.TestApp(app.app)
 
     def tearDown(self):
+        # Feedback: This seems overly expensive at larger scale. Consider a way to reset less expensively. What caused me to resort to this?
+        # Is there an idiomatic way to do bottle app testing and recreate the bottle app.
         # NOTE(thomasem): Get an entirely new API for each test.
         reload(app)
 

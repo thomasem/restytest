@@ -11,6 +11,7 @@ from restytest.api import controller
 from restytest.api import views
 
 
+# Feedback: If a developer were grepping through here for this, they may not be able to find it with routes broken apart like this.
 USERS_ROUTE = '/users'
 USER_ROUTE = '{}/<userid>'.format(USERS_ROUTE)
 GROUPS_ROUTE = '/groups'
@@ -20,7 +21,8 @@ API_MIMETYPE = "application/json"
 app = bottle.default_app()
 cntrlr = controller.Controller()
 
-
+# Feedback: Refactor this into returns. Instead know that people are going to do most of these things and they're not actually "exceptional".
+# Feedback: Add actual error messaging rather than expecting the client to always handle HTTP codes as a signal to what's wrong. This would be a nice UX improvement for this API.
 def common_failures(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -36,7 +38,14 @@ def common_failures(func):
             bottle.abort(409)
     return wrapper
 
+# Overall feedback:
+# * Could leverage empty response bodies and Location headers to point to a GET link.
+# * Leverage Links in response bodies for created entities
+# * Centralize routes instead of using decorators, because it puts them all in one place for grokability - the ability to know what
+# routes map to which functions (same reason you'd want RAML)
+# 
 
+# What does this DO?
 @bottle.hook('after_request')
 def set_content_type():
     bottle.response.set_header("Content-Type", API_MIMETYPE)
@@ -65,7 +74,6 @@ def get_user(userid):
 def update_user(userid):
     request_json = json.load(bottle.request.body)
     return views.user(cntrlr.update_user(userid, request_json))
-
 
 @app.delete(USER_ROUTE)
 @common_failures

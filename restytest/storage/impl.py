@@ -18,6 +18,8 @@ def _to_user(user, assocs):
     )
 
 
+# Feedback: why is this not user models in the users list. Obviously for this project it doesn't matter, but this seems like view concerns
+# imposing (too many) design choices on the storage layer.
 def _to_group(group, assocs):
     return models.Group(
         group_id=group.id,
@@ -25,6 +27,8 @@ def _to_group(group, assocs):
     )
 
 
+# Feedback: This is confusing. Needs comments to explain why this is needed to convert an Application Model into what the DB
+# needs to create a User. It's hard to tell that this is a user Application Model, too. Using a lot of overloaded terms/variables here.
 def _get_user_values(user):
     return dict(
         id=user.user_id,
@@ -48,6 +52,7 @@ def _get_user_assocs(group_id, users):
     return [dict(user_id=user_id, group_id=group_id)
             for user_id in users]
 
+# Overall feedback: What on earth is a series? That was especially confusing and could have had more documentation around it to help future me.
 
 class Storage(object):
     def __init__(self):
@@ -63,9 +68,11 @@ class Storage(object):
         trans = self.conn.begin()
         try:
             for query in series:
+                # Feedback: Is this scrubbed or subject to SQL injection attacks? :\ This blindly accepts anything that came from
+                # this list of queries. It looks like SQLAlchemy scrubs for you, though, which is nice.
                 self.conn.execute(*query)
             trans.commit()
-        except:
+        except: # Bare excepts = Bad. So bad, Thomas.
             trans.rollback()
             raise
 
@@ -79,6 +86,7 @@ class Storage(object):
             schema.user_group_associations.c.user_id == user_id
         )
         user = self.conn.execute(user_select).fetchone()
+        # Feedback: Check for user existing before even executing this next line.
         assocs = self.conn.execute(groups_select)
         return _to_user(user, assocs) if user else None
 
@@ -121,6 +129,7 @@ class Storage(object):
         # array casting, if possible.
         group_select = schema.groups.select()
         group_select = group_select.where(schema.groups.c.id == group_id)
+        # Feedback: Below could stand to be in its own function... same pattern used in a couple of other places.
         users_select = schema.user_group_associations.select().where(
             schema.user_group_associations.c.group_id == group_id
         )
